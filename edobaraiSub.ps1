@@ -113,6 +113,14 @@ function closeSession($sessionId) {
 }
 
 
+<# Windowを最大化 #>
+function maximizeWindow($sessionId) {
+  $url="http://localhost:4444/wd/hub/session/$sessionId/window/maximize"
+  $method = "POST"
+  $response=curl_nothing $url $method
+}
+
+
 <# URLへ移動 #>
 function goURL($sessionId, $URL) {
   $JSON='{"url":"' + $URL + '"}'
