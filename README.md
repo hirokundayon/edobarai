@@ -20,7 +20,7 @@
 3. Selenium Standalone Serverの起動  
     selenium-standalone-server.bat を叩いてSelenium Standalone Serverを起動します。  
     なお、各ファイルへのパス(/path/to)は予め適切なものに変更してください。  
-4. シェルスクリプトの起動  
+4. PowerShellスクリプトの起動  
    以上で準備完了です。PowerShellスクリプトを起動しましょう。  
    1. Google Chromeを起動する場合  
    `> .\edobarai.ps1`  
