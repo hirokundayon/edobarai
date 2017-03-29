@@ -23,7 +23,7 @@
 4. シェルスクリプトの起動  
    以上で準備完了です。PowerShellスクリプトを起動しましょう。  
    1. Google Chromeを起動する場合  
-   `> .\edobarai.ps1  
+   `> .\edobarai.ps1`  
    または  
    `> .\edobarai.ps1 chrome`  
    2. Internet Explorerを起動する場合  
