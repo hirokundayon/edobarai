@@ -1,214 +1,54 @@
-<# JSON付きで呼び出す #>
-function curl_json($url ,$method ,$data) {
-  $JSON = $data -replace "$([Environment]::NewLine) *","" ;
-  if ($PSVersionTable.PSVersion.Major > 2) {
-    $AdoDbStream = New-Object -ComObject ADODB.Stream
- 
-    $AdoDbStream.Charset = "UTF-8"
-    $AdoDbStream.Type = 2
-    $AdoDbStream.Open()
+<# PowerShell サブルーチン #>
 
-    $AdoDbStream.WriteText($JSON)
+. ".\\edobaraiSub.ps1"
 
-    $pos = $AdoDbStream.Position
-    $AdoDbStream.Position = 0
-    $AdoDbStream.Type = 1
-    $JSON=$AdoDbStream.Read($pos)
+<# 引数で起動するWebブラウザを指定 #>
+$browser = $Args -join " ";
 
-    $returnValue=Invoke-RestMethod -Uri $url -Method $method -Body $JSON
-    $AdoDbStream.Close()
-  } else {
-    <# PowerShell V2用 #>
-    $Request = [System.Net.WebRequest]::Create($url);
-    $Request.Method = $method;
-    $Request.ContentType = "application/json";
-    $Request.Accept = "application/json";
-
-    $utf8Bytes = [System.Text.Encoding]::UTF8.GetBytes($JSON);
-    $request.ContentLength = $utf8Bytes.Length;
-    $postStream = $request.GetRequestStream();
-    $postStream.Write($utf8Bytes, 0, $utf8Bytes.Length);
-    $postStream.Dispose();
-
-    $response = $request.GetResponse();
-
-    $reader = [IO.StreamReader] $response.GetResponseStream();
-    $output = $reader.ReadToEnd();
-
-    $reader.Close();
-    $response.Close();
-
-    add-type -assembly system.web.extensions
-    $ps_js=new-object system.web.script.serialization.javascriptSerializer
-    $returnValue=,$ps_js.DeserializeObject($output)
-  }
-
-  Write-Output $returnValue
-}
-
-<# JSONなしで呼び出す #>
-function curl_nothing($url ,$method) {
-  if ($PSVersionTable.PSVersion.Major > 2) {
-    $returnValue=Invoke-RestMethod -Uri $url -Method $method
-  } else {
-    <# PowerShell V2用 #>
-    $Request = [System.Net.WebRequest]::Create($url);
-    $Request.Method = $method;
-    $Request.ContentType = "application/json";
-    $Request.Accept = "application/json";
-
-    $response = $request.GetResponse();
-
-    $reader = [IO.StreamReader] $response.GetResponseStream();
-    $output = $reader.ReadToEnd();
-
-    $reader.Close();
-    $response.Close();
-
-    add-type -assembly system.web.extensions
-    $ps_js=new-object system.web.script.serialization.javascriptSerializer
-    $returnValue=,$ps_js.DeserializeObject($output)
-  }
-
-  Write-Output $returnValue
-}
-
-<# セッションを起動する #>
-function newSession($browser) {
-  $url="http://localhost:4444/wd/hub/session"
-  $method="POST"
-  switch ($browser)
-  {
-    <# Mozilla Firefox #>
-    "Firefox" {
-            $JSON='{"desiredCapabilities":{"browserName":"firefox"},"requiredCapabilities":{}}'
-        }
-    <# Google Chrome #>
-    "chrome" {
-            $JSON='{"desiredCapabilities":{"browserName":"chrome"},"requiredCapabilities":{}}'
-        }
-    <# Internet Explorer Win32版 #>
-    "ie" {
-            $JSON = '{"desiredCapabilities":{"browserName":"internet explorer"},"requiredCapabilities":{}}'
-        }
-    "Edge" {
-            $JSON = '{"desiredCapabilities":{"browserName":"MicrosoftEdge"},"requiredCapabilities":{}}'
-       }
-    <# それ以外の場合は Google Chrome #>
-    default {
-            $JSON='{"desiredCapabilities":{"browserName":"chrome"},"requiredCapabilities":{}}'
-        }
-  }
-
-  $response=curl_json $url $method $JSON
-  Write-Output $response.sessionId
-}
-
-
-<# セッションを閉じる #>
-function closeSession($sessionId) {
-  $url="http://localhost:4444/wd/hub/session/$sessionId"
-  $method="DELETE"
-  $response=curl_nothing $url $method
-}
-
+<# ブラウザ起動 #>
+$sessionId=newSession $browser
 
 <# Windowを最大化 #>
-function maximizeWindow($sessionId) {
-  $url="http://localhost:4444/wd/hub/session/$sessionId/window/maximize"
-  $method = "POST"
-  $response=curl_nothing $url $method
-}
+<# maximizeWindow $sessionId #>
 
+<# Googleのページへ移動 #>
+goURL $sessionId "http://www.google.co.jp/"
 
-<# URLへ移動 #>
-function goURL($sessionId, $URL) {
-  $JSON='{"url":"' + $URL + '"}'
-  $url="http://localhost:4444/wd/hub/session/$sessionId/url"
-  $method="POST"
-  $response=curl_json $url $method $JSON
-}
+<# 表示待ち #>
+waitForTitle $sessionId "Google"
 
-<# タイトル取得 #>
-function getTitle($sessionId) {
-  $url="http://localhost:4444/wd/hub/session/$sessionId/title"
-  $method="GET"
-  $response=curl_nothing $url $method
-  $title = $response.value;
-  Write-Output $title
-}
+<# 「OSC Fukuoka 太宰府」を検索 #>
+$element=getElementByName $sessionId "q"
 
-<# タイトル表示待ち #>
-<# タイトル1つ #>
-function waitForTitle($sessionId, $title1) {
-  $url="http://localhost:4444/wd/hub/session/$sessionId/title"
-  $method="GET"
-  do
-  {
-    Start-Sleep -s 1
-    $response=curl_nothing $url $method
-    $title = $response.value;
-  } until($title.Contains($title1))
-  Write-Output $title
-}
+sendKeysToElement $sessionId $element "OSC Fukuoka 太宰府\n"
 
-<# タイトル2つ #>
-function waitForTwoTitles($sessionId, $title1, $title2) {
-  $url="http://localhost:4444/wd/hub/session/$sessionId/title"
-  $method="GET"
-  do
-  {
-    Start-Sleep -s 1
-    $response=curl_nothing $url $method
-    $title = $response.value;
-  } until($title.Contains($title1) -or $title.Contains($title2))
-  Write-Output $title
-}
+<# 検索結果が表示されるまで待つ #>
+waitForTitle $sessionId "OSC Fukuoka 太宰府 - Google 検索"
 
-<# 部品取得 #>
-function getElement($sessionId, $selector, $locator) {
-  $JSON='{"using":"' + $selector + '","value":"' + $locator + '"}'
-  $url="http://localhost:4444/wd/hub/session/$sessionId/element"
-  $method="POST"
-  do
-  {
-     $response=curl_json $url $method $JSON
-  } until($response.status -eq 0)
-  Write-Output $response.value.ELEMENT
-}
+<# OSC2011 Fukuoka のレポートを表示させる #>
+$element=getElementByPartialLinkText $sessionId "OSC2011 Fukuoka 太宰府にて開催！！"
 
-<# By name #>
-function getElementByName($sessionId, $name) {
-  $response=getElement $sessionId "name" $name
-  Write-Output $response
-}
+clickElement $sessionId $element
 
-<# By partial link text #>
-function getElementByPartialLinkText($sessionId, $PartialLinkText) {
-  $response=getElement $sessionId "partial link text" $PartialLinkText
-  Write-Output $response
-}
+<# レポートが表示されるまで待つ #>
+waitForTitle $sessionId "OSC2011 Fukuoka 太宰府にて開催！！"
 
-<# By css selector #>
-function getElementByCSSselector($sessionId, $CSSselector) {
-  $response=getElement $sessionId "css selector" $CSSselector
-  Write-Output $response
-}
+<# LTの写真を表示 #>
+$CSSselector = "img[title='仏様に見守られながらのLT']";
+$element=getElementByCSSselector $sessionId $CSSselector
 
-<# Click Element #>
-function clickElement($sessionId, $element) {
-  $method="POST"
-  $url="http://localhost:4444/wd/hub/session/$sessionId/element/$element/click"
+clickElement $sessionId $element
 
-  $response=curl_nothing $url $method
-}
+<# 写真が表示されるまで待つ #>
+waitForTitle $sessionId "仏様に見守られながらのLT"
 
-<# Send Keys to Element #>
-function sendKeysToElement($sessionId, $element, $text) {
-  $JSON='{"value":["' + $text + '"]}'
-  $method="POST"
-  $url="http://localhost:4444/wd/hub/session/$sessionId/element/$element/value"
+<# 写真をクリック #>
+$CSSselector = "a[href='https://www.ospn.jp/press/wp-content/uploads/2011/12/LT.jpg']"
+$element=getElementByCSSselector $sessionId $CSSselector
 
-  $response=curl_json $url $method $JSON
-}
+clickElement $sessionId $element
 
+<# 10秒待つ #>
+Start-Sleep -s 10
+<# 終了処理 #>
+closeSession $sessionId
