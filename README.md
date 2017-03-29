@@ -22,7 +22,7 @@
     なお、各ファイルへのパス(/path/to)は予め適切なものに変更してください。  
 4. シェルスクリプトの起動  
    以上で準備完了です。PowerShellスクリプトを起動しましょう。  
-   1. Google Chromeを起動する場合  
+   1. Google Chromeを起動する場合  
    `> .\edobarai.ps1`  
    または  
    `> .\edobarai.ps1 chrome`  
