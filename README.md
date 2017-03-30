@@ -47,7 +47,9 @@
       <https://msdn.microsoft.com/powershell/reference/5.1/microsoft.powershell.utility/Invoke-RestMethod>  
    3. Seleniumの薄っすい話4:俺と非公式バインディング  
       <http://qiita.com/hiroshitoda/items/5fa5292ceb1e3e8a9610>  
-   4. OSC2011 Fukuoka 太宰府にて開催！！  
+   4. bashでWebブラウザ(Selenium WebDriver)を動かした話
+      <https://www.slideshare.net/hirofumitouhei/bashwebselenium-webdriver>  
+   5. OSC2011 Fukuoka 太宰府にて開催！！  
       <https://www.ospn.jp/press/20111219osc2011-fukuoka-report.html>  
-   5. SI-Toolkit for Web Testing ハンズオン勉強会  
+   6. SI-Toolkit for Web Testing ハンズオン勉強会  
       <https://www.slideshare.net/yuichi_kuwahara/sitoolkit-for-web-testing>  
