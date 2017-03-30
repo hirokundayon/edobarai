@@ -15,8 +15,14 @@
    8. 起動したWebブラウザを終了させます。  
 2. 準備  
     1. Selenium Standalone Serverのダウンロード  
-    次のURLからSelenium Standalone Serverを取得します。  
-    <http://www.seleniumhq.org/download/>  
+    次のURLから必要なファイルを取得します。   
+    <http://www.seleniumhq.org/download/>   
+    + Selenium Standalone Server  
+    + Google Chrome Driver  
+    + The Internet Explorer Driver Server  
+    + Mozilla GeckoDriver  
+    + Microsoft Edge Driver  
+
 3. Selenium Standalone Serverの起動  
     selenium-standalone-server.bat を叩いてSelenium Standalone Serverを起動します。  
     なお、各ファイルへのパス(/path/to)は予め適切なものに変更してください。  
