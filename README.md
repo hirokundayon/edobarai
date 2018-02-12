@@ -1,10 +1,10 @@
-# Selenium WebDriverを動かすPowerShellスクリプトの動かし方
+# Google Chromeを動かすPowerShellスクリプトの動かし方
 <div style="text-align: right;">
 東平洋史
 </div>
 
 1. はじめに  
-   この資料は Selenium WebDriver を動かすPowerShellスクリプト edobarai.ps1 の動かし方を記述したものです。このPowerShellスクリプトは次の手順で、太宰府で開かれたOSC2011 Fukuokaのレポートを表示させます。  
+   この資料は Google Chrome を動かすPowerShellスクリプト edobarai.ps1 の動かし方を記述したものです。このPowerShellスクリプトは次の手順で、太宰府で開かれたOSC2011 Fukuokaのレポートを表示させます。  
    1. Webブラウザを起動します。  
    2. Googleのページを表示します。  
    3. 「OSC Fukuoka 太宰府」をキーに検索します。  
@@ -17,27 +17,11 @@
     1. Selenium Standalone Serverのダウンロード  
     次のURLから必要なファイルを取得します。   
     <http://www.seleniumhq.org/download/>   
-    + Selenium Standalone Server  
     + Google Chrome Driver  
-    + The Internet Explorer Driver Server  
-    + Mozilla GeckoDriver  
-    + Microsoft Edge Driver  
-
-3. Selenium Standalone Serverの起動  
-    selenium-standalone-server.bat を叩いてSelenium Standalone Serverを起動します。  
-    なお、各ファイルへのパス(/path/to)は予め適切なものに変更してください。  
+3. Google Chrome DriverにPATHを通す。  
 4. PowerShellスクリプトの起動  
    以上で準備完了です。PowerShellスクリプトを起動しましょう。  
-   1. Google Chromeを起動する場合  
    `> .\edobarai.ps1`  
-   または  
-   `> .\edobarai.ps1 chrome`  
-   2. Internet Explorerを起動する場合  
-   `> .\edobarai.ps1 ie`  
-   3. Mozilla Firefoxを起動する場合  
-   `> .\edobarai.ps1 firefox`  
-   4. Microsoft Edgeを起動する場合  
-   `> .\edobarai.ps1 edge`  
 5. 参考文献  
    1. WebDriver  
       Living Document  
