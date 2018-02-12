@@ -1,1 +1,0 @@
-java -Dwebdriver.chrome.driver=/path/to/chromedriver.exe -Dwebdriver.edge.driver=/path/to/MicrosoftWebDriver.exe -Dwebdriver.ie.driver=/path/to/IEDriverServer.exe -jar /path/to/selenium-server-standalone-3.3.1.jar
